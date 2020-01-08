@@ -15,11 +15,12 @@
             <div class="lead">
                 Continue as guest
                 {% url 'guest_register' as guest_register_url %}
-                {% include 'accounts/snippets/form-login.html' with form=guest_form next_url=request.build_absolute_uri action_url=guest_register_url %}
+                {% include 'accounts/snippets/form-login.html' with form=guest_form  next_url=request.build_absolute_uri action_url=guest_register_url %}
             </div>
         </div>
     </div>
     {% else %}
+    {{object.cart.id}} {{object.order_id}}
     <p>CArt Total: {{object.cart.total}}</p>
     <p>shipping Total: {{object.shipping_total}}</p>
     <p>Order Total: {{object.total}}</p>
