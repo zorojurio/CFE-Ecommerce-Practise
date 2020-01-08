@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+Home Page
+{% endblock title %}
+
+
+{% block content %}
+<div class="container-fluid">
+    <h1>{{title}}</h1>
+    <h1>Hello, world!</h1>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <img src="{% static 'img/beach.jpg' %}" class="img-fluid">
+            <p>{{content}}</p>
+            <!-- form using forms.Form -->
+
+            <!--  <div class="col-sm-12 col-12 mt-5">
+                       <form method="POST">
+                           {% csrf_token %}
+                           <input type="text" name="fullname" placeholder="Name" class="form-control">
+                           <input type="email" name="email" placeholder="email" class="form-control">
+                           <input type="text-area" name="content" placeholder="content" class="form-control">
+                           <button type="submit" class="btn btn-danger">Submit</button>
+                       </form>
+                   </div> -->
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

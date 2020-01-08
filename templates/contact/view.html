@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+contact Us
+{% endblock title %}
+
+
+{% block content %}
+<div class="container">
+    <div>
+        <h1>{{title}}</h1>
+        <p>{{content}}</p>
+    </div>
+    {% if form %}
+    <div class="col-sm-8 col-12">
+        <form method="POST">
+            {% csrf_token %}
+            {{form}}
+            <button type="submit" class="btn btn-danger">Submit</button>
+        </form>
+    </div>
+    {% endif %}
+    <hr>
+</div>
+{% endblock content %}
