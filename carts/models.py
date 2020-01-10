@@ -58,9 +58,6 @@ class Cart(models.Model):
 
 
 def m2m_changed_cart_receiver(sender, instance, action, *args, **kwargs):
-    print(action)
-    print(instance.products.all())
-    print(instance.total)
     if action == 'post_add' or action == 'post_clear' or action == 'post_remove':
         products = instance.products.all()
         total = 0

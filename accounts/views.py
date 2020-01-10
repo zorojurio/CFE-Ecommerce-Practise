@@ -7,10 +7,8 @@ from accounts.models import GuestEmail
 
 
 def guest_register_view(request):
+    print(request.POST)
     form = GuestForm(request.POST or None)
-    context = {
-        "form": form
-    }
     next_ = request.GET.get('next')
     next_post = request.POST.get('next')
     redirect_path = next_ or next_post or None

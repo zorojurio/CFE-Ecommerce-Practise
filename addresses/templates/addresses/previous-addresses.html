@@ -1,0 +1,20 @@
+{% if address_qs.exists %}
+    <form method="POST" action='{% if action_url %}{{action_url}}{% else %}{% url 'login' %}{% endif %}' class="form">
+        {% csrf_token %}
+            
+        {% if next_url %}
+            <input type="hidden" name="next" value="{{next_url}}">
+        {% endif %}
+
+        {% if address_type %}
+            <input type="hidden" name="address_type" value="{{address_type}}">
+        {% endif %}
+
+        {% for address in address_qs %}
+            <input type="radio" name="shipping_address" id="address-{{address.id}}" value="{{address.id}}">
+            <label for="address-{{address_id}}">{{address.address_line1}}</label> 
+            <br>  
+        {% endfor %}
+        <button type="submit" class="btn btn-success">Change Your Address</button>
+    </form>
+{% endif %}
