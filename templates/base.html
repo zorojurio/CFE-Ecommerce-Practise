@@ -16,6 +16,102 @@
         {% block content %}
         {% endblock content %}
         {% include 'base/js.html' %}
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var ProductForm = $(".form-product-add-ajax")
+
+                ProductForm.submit(function (event) {
+                    event.preventDefault();
+
+                    var thisForm = $(this) //grabing the data only specific to this form we are refering
+                    // var actionEndPoint = thisForm.attr("action");
+                    var actionEndPoint = thisForm.attr("data-endpoint")
+                    var httpMethod = thisForm.attr("method");
+                    var formData = thisForm.serialize(); // encode string for submission
+
+
+                    //sending data to back end
+                    // submiting the form throgh ajax
+                    $.ajax({
+                        url: actionEndPoint,
+                        method: httpMethod,
+                        data: formData,
+                        success: function (data) {
+                            var submitSpan = thisForm.find(".submit-span")
+                            console.log(submitSpan.html())
+                            //display data reciecved from back end
+                            if (data.added) {
+                                submitSpan.html(' In cart <button class="btn btn-danger" type="submit"> Remove? </button>')
+                            } else {
+                                submitSpan.html('<button class="btn btn-success" type="submit">Add to Cart</button>')
+                            }
+                            // navbar count
+                            var navbarCount = $(".navbar-cart-count")
+                            navbarCount.text(data.cartItemCount)
+
+
+                            //refresh the cart http://127.0.0.1:8000/cart/
+                            var currentPath = window.location.href
+                            if (currentPath.indexOf("cart") != - 1) {  //localhost/cart:8000
+                                refreshCart()
+                            }
+                            console.log(window.location.href.indexOf("cart"))
+                        },
+                        error: function (errorData) {
+                            console.log("error")
+                            console.log(errorData)
+                        },
+                    })
+
+                })
+
+                function refreshCart() {
+                    console.log("in current Cart")
+                    var cartTable = $(".cart-table")
+                    var cartBody = cartTable.find(".cart-body")
+                    //cartBody.html("<h1> Changed MF </h1>")
+                    var productsRows = cartBody.find(".cart-products")
+                    var currentUrl = window.location.href
+
+                    var refreshCartUrl = '/api/cart/'
+                    var refreshCartMethod = "GET" // refresh using the POSTed backend data
+                    var data = {}
+
+                    $.ajax({
+                        url: refreshCartUrl,
+                        method: refreshCartMethod,
+                        data: data,
+                        success: function (data) {
+                            var hiddenCartItemRemoveForm = $(".cart-item-remove-form")
+                            if (data.products.length > 0) {
+                                productsRows.html(' ')
+                                i = data.products.length
+                                $.each(data.products, function (index, value) {
+                                    var newCartItemRemove = hiddenCartItemRemoveForm.clone()
+                                    newCartItemRemove.css("display", "block")
+                                    newCartItemRemove.find(".cart-item-product-id").val(value.id)
+
+                                    cartBody.prepend("<tr><th scope='row'> " + i + "</th><td> <a href='" + value.url + "'>" + value.name + " </a>" + newCartItemRemove.html() + "</td><td>" + value.price + "</td></tr>")
+                                    i--
+                                })
+
+                                cartBody.find(".cart-subtotal").text(data.subtotal)
+                                cartBody.find(".cart-total").text(data.total)
+                            } else {
+                                // when there are no items in the cart it refreshes automatically because of the false condition
+                                window.location.href = currentUrl
+                            }
+                        },
+                        error: function (errorData) {
+                            console.log("error")
+                            console.log(errorData)
+                        },
+
+                    })
+                }
+            })
+        </script>
     </body>
 
 </html>

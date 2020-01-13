@@ -7,21 +7,21 @@
 
 
     {% if cart.products.exists %}
-    <table class="table">
+    <table class="table cart-table">
         <thead>
-            <tr>
+            <tr >
                 <th scope="col">#</th>
                 <th scope="col">Product Name</th>
                 <th scope="col">Product Price</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="cart-body">
 
             {% for product in cart.products.all %}
-            <tr>
-                <th scope="row">{{forloop.counter}}</th>
+            <tr class="cart-products">
+                <th  scope="row">{{forloop.counter}}</th>
                 <td><a href="{{product.get_absolute_url}}">{{product.title}}</a>
-                    {% include 'products/snippets/update-cart.html' with product=product cart=cart in_cart=True %}
+                    {% include 'carts/snippets/remove-products.html' with product_id=product.id  %}
                 </td>
                 <td>{{product.price}}</td>
 
@@ -31,13 +31,13 @@
                 <th scope="row"></th>
                 <td><b>Sub Total</b> </td>
 
-                <td>{{cart.subtotal}}</td>
+                <td><span class="cart-subtotal">{{cart.subtotal}}</span></td>
 
             </tr>
             <tr>
                 <th scope="row"></th>
                 <td><b>Total</b> </td>
-                <td>{{cart.total}}</td>
+                <td><span class="cart-total">{{cart.total}}</span></td>
 
             </tr>
             <tr>
@@ -50,6 +50,11 @@
 
         </tbody>
     </table>
+
+    <div class="cart-item-remove-form" style="display:none">
+        {% include 'carts/snippets/remove-products.html' %}
+    </div>
+
     {% else %}
     <p class="lead">
         Cart is empty

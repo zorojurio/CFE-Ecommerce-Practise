@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.http import JsonResponse
 from accounts.forms import GuestForm, LoginForm
 from accounts.models import GuestEmail
 from addresses.forms import AddressForm
@@ -8,6 +8,20 @@ from billing.models import BillingProfile
 from carts.models import Cart
 from orders.models import Order
 from products.models import Product
+
+
+# template tag items >> json response items
+# seperate view for JSON respose so it can handle the data without being refreshed
+def cart_detail_api_view(request):
+    cart_obj, new_obj = Cart.objects.new_or_get(request)
+    products = [{
+        "url": x.get_absolute_url(),
+        "id": x.id,
+        "name": x.title,
+        "price": x.price,
+    } for x in cart_obj.products.all()]
+    cart_data = {"products": products, "subtotal": cart_obj.subtotal, "total": cart_obj.total}
+    return JsonResponse(cart_data)
 
 
 def cart_home(request):  # url >> /cart/
@@ -19,8 +33,9 @@ def cart_home(request):  # url >> /cart/
 
 
 def cart_update(request):  # url >> /cart/update # add to cart remove  cart
-    print(request.POST)
+
     product_id = request.POST.get("product_id")
+
     if product_id is not None:
         try:
             product_obj = Product.objects.get(id=product_id)
@@ -30,9 +45,20 @@ def cart_update(request):  # url >> /cart/update # add to cart remove  cart
         cart_obj, new_obj = Cart.objects.new_or_get(request)
         if product_obj in cart_obj.products.all():
             cart_obj.products.remove(product_obj)
+            added = False
         else:
             cart_obj.products.add(product_obj)
+            added = True
         request.session['cart_items'] = cart_obj.products.count()
+        if request.is_ajax():
+            print("ajax")
+            json_data = {
+                "added": added,  # add to card is clicked so added is true. removed is false
+                "removed": not added,
+                # if the remove from cart is clicked added is false hense not added is true
+                "cartItemCount": cart_obj.products.count()
+            }
+            return JsonResponse(json_data)
     return redirect("cart:home")
 
 
