@@ -58,7 +58,8 @@ def cart_update(request):  # url >> /cart/update # add to cart remove  cart
                 # if the remove from cart is clicked added is false hense not added is true
                 "cartItemCount": cart_obj.products.count()
             }
-            return JsonResponse(json_data)
+            return JsonResponse(json_data, status=200)
+            # return JsonResponse({"message": "Error  400"}, status=400)
     return redirect("cart:home")
 
 

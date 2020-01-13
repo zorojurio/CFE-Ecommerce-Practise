@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .forms import ContactForm
 from django.contrib.auth import authenticate, login, get_user_model
 
@@ -34,5 +34,11 @@ def contact_page(request):
     if request.method == "POST":
         if contact_form.is_valid():
             print(contact_form.cleaned_data)
+            if request.is_ajax():
+                return JsonResponse({"message": "Thank You For Your Submission"})  # converts dictionary into JSON
 
+        if contact_form.errors:
+            errors = contact_form.errors.as_json()  # this is already JSON FOmat hense HTTP response is used
+            if request.is_ajax():
+                return HttpResponse(errors, status=400, content_type='application/json')
     return render(request, "contact/view.html", context=context)

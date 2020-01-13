@@ -30,8 +30,11 @@ class ContactForm(forms.Form):
             }
         ))
 
-    def clean_email(self):
-        email = self.cleaned_data.get("email")
-        if not "gmail" in email:
-            raise forms.ValidationError("Sorry Your Email has to be a Gmail")
-        return email
+    # def clean_email(self):
+    #     email = self.cleaned_data.get("email")
+    #     if not "gmail" in email:
+    #         raise forms.ValidationError("Sorry Your Email has to be a Gmail")
+    #     return email
+
+    # def clean_content(self):
+    #     raise forms.ValidationError("Content is wrong")
