@@ -116,3 +116,4 @@ def checkout_home(request):  # url >> /cart/checkout
 
 def checkout_done_view(request):
     return render(request, template_name='carts/checkout-done.html')
+#lolla
