@@ -1,5 +1,49 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
+
+User = get_user_model()
+
+
+class UserAdminCreationForm(forms.ModelForm):
+    """Form definition for UserAdminCreation."""
+    password1 = forms.CharField(label="password", widget=forms.PasswordInput)
+    password2 = forms.CharField(label="password confirmation", widget=forms.PasswordInput)
+
+    class Meta:
+        """Meta definition for UserAdminCreationform."""
+
+        model = User
+        fields = ('email',)
+
+    def clean_password1(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("passwords must be same")
+        return password1
+
+    def save(self, commit=True):
+        user = super(UserAdminCreationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data.get("password1"))
+        if commit:
+            user.save()
+        return user
+
+
+class UserAdminChangeForm(forms.ModelForm):
+    """Form definition for UserAdminChange."""
+
+    password = ReadOnlyPasswordHashField()
+
+    class Meta:
+        """Meta definition for UserAdminChangeform."""
+
+        model = User
+        fields = ('email', 'password', 'active', 'admin')
+
+    def clean_password(self):
+        return self.initial["password"]
 
 
 class GuestForm(forms.Form):
@@ -7,39 +51,32 @@ class GuestForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField()
+    email = forms.EmailField(label="Email")
     password = forms.CharField(widget=forms.PasswordInput())
 
 
-User = get_user_model()
+class RegisterForm(forms.ModelForm):
+    """Form definition for UserAdminCreation."""
+    password1 = forms.CharField(label="password", widget=forms.PasswordInput)
+    password2 = forms.CharField(label="password confirmation", widget=forms.PasswordInput)
 
+    class Meta:
+        """Meta definition for UserAdminCreationform."""
 
-class RegisterForm(forms.Form):
-    username = forms.CharField()
-    email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput())
-    password2 = forms.CharField(
-        label="Confirm Password", widget=forms.PasswordInput())
+        model = User
+        fields = ('email',)
 
-    def clean_username(self):
-        username = self.cleaned_data.get("username")
-        qs = User.objects.filter(username=username)
-        if qs.exists():
-            raise forms.ValidationError("Username is Taken")
-        return username
-
-    def clean_email(self):
-        email = self.cleaned_data.get("email")
-        qs = User.objects.filter(email=email)
-        if qs.exists():
-            raise forms.ValidationError("Email is taken")
-        return email
-
-    def clean(self):
-        data = self.cleaned_data
-        password = self.cleaned_data.get("password")
+    def clean_password1(self):
+        password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
-        if password != password2:
-            raise forms.ValidationError(
-                "passwords are not matching please try again")
-        return data
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("passwords must be same")
+        return password1
+
+    def save(self, commit=True):
+        user = super(RegisterForm, self).save(commit=False)
+        user.set_password(self.cleaned_data.get("password1"))
+        user.active = True
+        if commit:
+            user.save()
+        return user
