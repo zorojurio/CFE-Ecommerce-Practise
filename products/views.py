@@ -4,6 +4,8 @@ from django.views.generic import ListView, DetailView
 from django.http import Http404
 from carts.models import Cart
 
+from analytics.mixins import ObjectViewedMixin
+
 
 class ProductListView(ListView):
     queryset = Product.objects.all()
@@ -16,7 +18,7 @@ class ProductListView(ListView):
         return context
 
 
-class ProductDetailSlugView(DetailView):
+class ProductDetailSlugView(ObjectViewedMixin, DetailView):
     template_name = "products/product_detail.html"
 
     def get_context_data(self, *args, **kwargs):
@@ -28,14 +30,17 @@ class ProductDetailSlugView(DetailView):
 
     def get_object(self, *args, **kwargs):
         slug = self.kwargs.get('slug')
+
         # instance = get_object_or_404(Product, slug=slug, active=True)
         try:
             instance = Product.objects.get(slug=slug, active=True)
+
         except Product.DoesNotExist:
             raise Http404("Product Not Found Fucker")
         except Product.MultipleObjectsReturned:
             qs = Product.objects.filter(slug=slug, active=True)
             instance = qs.first()
+        # object_viewed_signal.send(instance.__class__, instance, self.request)
         return instance
 
 

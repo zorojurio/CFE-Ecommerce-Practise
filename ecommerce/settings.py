@@ -44,10 +44,13 @@ INSTALLED_APPS = [
     'orders',
     'accounts',
     'billing',
-    'addresses'
+    'addresses',
+    'analytics'
 ]
 
-AUTH_USER_MODEL = 'accounts.User' 
+AUTH_USER_MODEL = 'accounts.User'
+FORCE_SESSION_TO_THREE = False
+FORCE_INACTIVE_USER_ENDSESSION = False
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
