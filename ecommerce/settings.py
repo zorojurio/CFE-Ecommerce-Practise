@@ -52,8 +52,8 @@ AUTH_USER_MODEL = 'accounts.User'
 FORCE_SESSION_TO_THREE = False
 FORCE_INACTIVE_USER_ENDSESSION = False
 
-
-
+STRIPE_SECRET_KEY = ""
+STRIPE_PUB_KEY = ""
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -145,3 +145,9 @@ MEDIA_ROOT = os.path.join(os.path.dirname(
 
 
 LOGOUT_REDIRECT_URL = '/login/'
+
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
