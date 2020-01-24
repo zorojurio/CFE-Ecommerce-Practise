@@ -10,6 +10,10 @@
     integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
     crossorigin="anonymous"></script>
 
+
+<!-- stripe -->
+<script src="https://js.stripe.com/v3/"></script>
+
 <!-- jquery -confirm JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 
@@ -20,3 +24,10 @@
 
 <!-- E commerce Custom JavaScript -->
 <script src="{% static 'js/ecommerce.js' %}"></script>
+<!-- E commerce main JavaScript -->
+<script src="{% static 'js/ecommerce-main.js' %}"></script>
+
+<!-- js render -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/1.0.5/jsrender.min.js"></script>
+
+{% include 'base/js-templates.html' %}

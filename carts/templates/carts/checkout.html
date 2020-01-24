@@ -53,19 +53,32 @@
                </div>
            </div>
         {% else %}
-            <h1>Finalize Checkout</h1>
+            
+            {% if not has_card %}
+                <!-- enter credit card here -->
+                <div class='stripe-payment-form' data-token='{{ publish_key }}'
+                    data-next-url='{{request.build_absolute_uri}}' data-btn-title="Add Payment Method">
+                </div>
+            {% else %}
+                <h1>Finalize Checkout</h1>
 
-            {{object.cart.id}} {{object.order_id}}
-            <p>CArt Items: {% for product in object.cart.products.all %}{{product}} {% if not forloop.last %},{% endif %} {% endfor %}</p>
-            <p>CArt Total: {{object.cart.total}}</p>
-            <p>Shipping Address{{object.shipping_address.get_address}}</p>
-            <p>Billing Address{{object.billing_address.get_address}}</p>
-            <p>shipping Total: {{object.shipping_total}}</p>
-            <p>Order Total: {{object.total}}</p>
-            <form action="" method="post" class-"form">
-                {% csrf_token %}
-                <button class="btn btn-success" type="submit">Checkout</button>
-            </form>
+                {{object.cart.id}} {{object.order_id}}
+                <p>CArt Items: {% for product in object.cart.products.all %}{{product}} {% if not forloop.last %},{% endif %} {% endfor %}</p>
+                <p>CArt Total: {{object.cart.total}}</p>
+                <p>Shipping Address{{object.shipping_address.get_address}}</p>
+                <p>Billing Address{{object.billing_address.get_address}}</p>
+                <p>Payment Method : {{billing_profile.default_card}} <a href="{{billing_profile.get_payment_method_url}}?next={{request.build_absolute_uri}}">Change</a> </p>
+                <p>shipping Total: {{object.shipping_total}}</p>
+                <p>Order Total: {{object.total}}</p>
+                
+
+                <form action="" method="post" class-"form">
+                    {% csrf_token %}
+                    <button class="btn btn-success" type="submit">Checkout</button>
+                </form>
+
+            {% endif %}
+                
         {% endif %}
     {% endif %}
 
