@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'accounts',
     'billing',
     'addresses',
-    'analytics'
+    'analytics',
+    'marketing',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -54,6 +55,10 @@ FORCE_INACTIVE_USER_ENDSESSION = False
 
 STRIPE_SECRET_KEY = ""
 STRIPE_PUB_KEY = ""
+
+MAILCHIMP_API_KEY = ""
+MAILCHIMP_DATA_CENTER = ""
+MAILCHIMP_EMAIL_LIST_ID = ""
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

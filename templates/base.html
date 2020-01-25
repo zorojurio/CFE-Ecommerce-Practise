@@ -12,9 +12,25 @@
     </head>
 
     <body>
-        {% include 'base/navbar.html'  %}
-        {% block content %}
-        {% endblock content %}
+    {% include 'base/navbar.html'  %}
+        
+            
+            {% if messages %}
+            <div class="container">
+                <div class="alert alert-success messages mt-2">
+                    {% for message in messages %}
+                        <span {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                            {{ message }}
+                        </span>
+                    {% endfor %}
+                </div>
+            </div> 
+            {% endif %}
+        
+            {% block content %}
+            {% endblock content %}
+       
         {% include 'base/js.html' %}
 
         

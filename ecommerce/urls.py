@@ -14,16 +14,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import path, include
-from .views import home_page, about_page, contact_page
-from accounts.views import LoginView, RegisterView, guest_register_view
+from django.contrib import admin
 from django.contrib.auth.views import LogoutView
-from addresses.views import checkout_address_create_view, checkout_address_reuse_view
-from carts.views import cart_detail_api_view
+from django.urls import include, path
+
+from accounts.views import LoginView, RegisterView, guest_register_view
+from addresses.views import (checkout_address_create_view,
+                             checkout_address_reuse_view)
 from billing.views import payment_method, payment_method_create_view
+from carts.views import cart_detail_api_view
+from marketing.views import MarketingPreferenceUpdateView, MailChimpWebHookView
+
+from .views import about_page, contact_page, home_page
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,6 +45,8 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name="register"),
     path('products/', include('products.urls', namespace='products')),
     path('search/', include('search.urls', namespace='search')),
+    path('settings/email/', MarketingPreferenceUpdateView.as_view(), name='marketing-pref'),
+    path('webhooks/mailchimp/', MailChimpWebHookView.as_view(), name='webhooks-mailchimp'),
     path('cart/', include('carts.urls', namespace='cart')),
 
 ]
